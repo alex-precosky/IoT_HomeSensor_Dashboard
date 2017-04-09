@@ -1,0 +1,3 @@
+[submodule "FridgeAPI/static/js/rickshaw"]
+	path = FridgeAPI/static/js/rickshaw
+	url = https://github.com/shutterstock/rickshaw.git
