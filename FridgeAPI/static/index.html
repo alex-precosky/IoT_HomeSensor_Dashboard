@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Alex Fridge Sensor</title>
+        
+        <style>
+            h2 {
+                color: rgb(0, 232, 15);
+            }
+        
+            .chart_title {
+                position: relative;
+                left: 20px;
+                font-family: Sans-serif;
+            }
+        
+            .chart {
+            	position: relative;
+                left: 40px;
+                border-style: solid;
+                width: 580px;
+            }
+            
+           .chart_container {
+                    margin:        auto;
+                    position:        relative;
+                    width: 650px;
+                    padding:        20px;
+                    background:        #fff;
+                    box-shadow:        0px 0px 10px #999;
+                    border:        1px solid #999;
+                    margin-top:        20px;
+                    border-radius:     10px;
+            }
+            
+            .y_axis {
+                position: absolute;
+                height: 250px;
+                width: 40px;
+            }
+            
+            .legend { 
+                margin-left: 40px;
+                font-family: Arial;
+                font-size: 12px;
+                color: white;
+                background: #404040;
+                display: inline-block;
+                padding: 12px 50px; 
+                border-radius: 2px;
+                position: relative;
+                float: left;
+            }
+            
+        </style>
+        
+    </head>
+    <body>
+
+    <script src="js/rickshaw/vendor/d3.v3.js"></script>
+    <script src="js/rickshaw/vendor/d3.layout.min.js"></script>
+    <script src="js/rickshaw/rickshaw.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="js/rickshaw/rickshaw.css">
+
+ 
+        <div class="chart_container" id="temperatureChart_container">
+            <div class="legend" id="temperature_legend"></div>
+            <div class="chart_title" id="temperature_chart_title">
+                   <h3>Fridge Temperature, Last 24 Hours</h3>
+            </div>
+            <div class="y_axis" id="y_axis"></div>
+            <div class="chart" id="temperatureChart"></div> 
+        </div>
+    
+      <p></p><p></p><p></p><p></p>
+    
+        <div class="chart_container" id="voltageChart_container">
+            <div class="legend" id="voltage_legend"></div>
+            <div class="chart_title" id="voltage_chart_title">
+                   <h3>Sensor Battery Voltage</h3>
+            </div>
+            <div class="y_axis" id="voltage_y_axis"></div>
+            <div class="chart" id="voltageChart"></div> 
+        </div> 
+
+    <p>
+        In the fridge is a resistive temperature device, along with some stuff to transmit
+        the values from it wirelessly every 10 seconds. A raspberry pi receives that and publishes
+        to an MQTT server. Another process subscribes to that data feed and writes a row in
+        a MySQL database somewhere.  A Flask based Python application serves up a JSON representation
+        of the sensor readings and some Javascript makes a pretty chart.
+    </p>
+    
+    <h2>Some components include</h2>
+        <ul>A pair of 1 mW XBee Series 1 802.15.4 radios</ul>
+        <ul>Resistive temperature device (RTD)</ul>
+        <ul>RTD to digital converter</ul>
+        <ul>2000 mAh 3.7V Lithium-Polymer battery</ul>
+    </ul>
+    
+    <script>
+
+    var temperatueGraph = new Rickshaw.Graph.Ajax( {
+            element: document.querySelector("#temperatureChart"),
+            width: 580,
+            height: 250,
+            stroke: true,
+            renderer: 'line',
+            xScale: d3.time.scale(),
+            dataURL: 'http://homesensors.alexwarrior.cc/last24hours',
+            series: [ {
+                name: "Temperature",
+                color: 'rgba(192,132,255,0.8)'               
+            },{
+                name: "Battery Voltage",
+                color: 'rgba(132,192,255,0.8)'               
+            },
+            ], 
+            onComplete: function(transport) {
+                var x_axis = new Rickshaw.Graph.Axis.Time({
+                    graph: transport.graph
+                });
+    
+            
+                var y_ticks = new Rickshaw.Graph.Axis.Y( {
+                    graph: transport.graph,
+                    orientation: 'left',
+                    tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+                    element: document.getElementById('y_axis')
+                } );
+                y_ticks.graph.update();
+            
+                var detail = new Rickshaw.Graph.HoverDetail({ graph: transport.graph });
+                
+                var legend = new Rickshaw.Graph.Legend( {
+                    graph: transport.graph,
+                    element: document.getElementById('temperature_legend')
+                } );
+                
+            }
+    } );
+
+    var limitDate = new Date(2015, 4, 1, 0, 0, 0, 0);
+    limitDateURLStr = "http://homesensors.alexwarrior.cc/getData?maxPoints=5000&since="
+    limitDateURLStr = limitDateURLStr.concat(limitDate.toISOString())
+    
+    var voltageGraph = new Rickshaw.Graph.Ajax( {
+            element: document.querySelector("#voltageChart"),
+            width: 580,
+            height: 250,
+            stroke: true,
+            renderer: 'line',
+			min: 2.5,
+            xScale: d3.time.scale(),
+            dataURL: limitDateURLStr,
+            series: [ {
+                name: "Battery Voltage",
+                color: 'rgba(132,192,255,0.8)'               
+            },
+            ], 
+            onComplete: function(transport) {
+                var x_axis = new Rickshaw.Graph.Axis.Time({
+                    graph: transport.graph
+                });
+    
+            
+                var y_ticks = new Rickshaw.Graph.Axis.Y( {
+                    graph: transport.graph,
+                    orientation: 'left',
+                    tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+                    element: document.getElementById('voltage_y_axis')
+                } );
+                y_ticks.graph.update();
+            
+                var detail = new Rickshaw.Graph.HoverDetail({ graph: transport.graph });
+                
+                var legend = new Rickshaw.Graph.Legend( {
+                    graph: transport.graph,
+                    element: document.getElementById('voltage_legend')
+                } );
+                
+            }
+    } );
+
+    </script>
+
+
+    </body>
+</html>
