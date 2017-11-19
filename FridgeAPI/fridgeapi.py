@@ -8,6 +8,8 @@ import MySQLdb as mdb
 from datetime import datetime,timedelta
 import dateutil.parser
 
+import ConfigParser
+
 import json
 import pdb
 @app.route("/")
@@ -15,15 +17,27 @@ def defaultPath():
     return app.send_static_file("index.html")
 
     
+def get_mysql_params():
+    config = ConfigParser.ConfigParser()
+
+    with app.open_resource('config.ini') as f:
+        config.readfp(f)
+
+        mysql_host = config.get("mysql", "host")
+        mysql_user = config.get("mysql", "user")
+        mysql_passwd = config.get("mysql", "password")
+        mysql_db = config.get("mysql", "db")
+
+    return mysql_host, mysql_user, mysql_passwd, mysql_db
+
+
 # Paramaters:
 # since         ISO timestamp of where to start samples from
 # maxPoints     maximum number of samples returned
 @app.route("/getData")
 def getData():
-    mysql_host = "mysql.alexwarrior.cc"
-    mysql_user = "precosky_fridge"
-    mysql_passwd = "CFfFyHpZd8iTOEFSyZpy"
-    mysql_db = "alexwarrior_fridge"
+    mysql_host, mysql_user, mysql_passwd, mysql_db = get_mysql_params()
+
 
     # if not specified, 1000 points outght to be enough
     maxPoints = request.args.get("maxPoints", default=1000, type=int)
@@ -79,10 +93,7 @@ def getData():
 @app.route("/last24hours")
 def getLast24HourData():
 
-    mysql_host = "mysql.alexwarrior.cc"
-    mysql_user = "precosky_fridge"
-    mysql_passwd = "CFfFyHpZd8iTOEFSyZpy"
-    mysql_db = "alexwarrior_fridge"
+    mysql_host, mysql_user, mysql_passwd, mysql_db = get_mysql_params()
 
     try:
         limitDate = datetime.now() - timedelta(days=1)

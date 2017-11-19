@@ -1,0 +1,5 @@
+[mysql]
+host = somehost.com
+user = someuser
+password = password
+db = somedb
