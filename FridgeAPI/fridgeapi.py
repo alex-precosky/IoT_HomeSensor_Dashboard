@@ -26,11 +26,7 @@ def getData():
     mysql_db = "alexwarrior_fridge"
 
     # if not specified, 1000 points outght to be enough
-    maxPoints = request.args.get("maxPoints")
-    if maxPoints is None:
-        maxPoints = 1000;
-    else:
-        maxPoints = int(maxPoints)
+    maxPoints = request.args.get("maxPoints", default=1000, type=int)
         
     if request.args.get("since") is None:
         limitDate = datetime.now() - timedelta(days=1)
@@ -115,3 +111,4 @@ def getLast24HourData():
     
 if __name__ == "__main__":
     app.run(debug=True)
+    
