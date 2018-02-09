@@ -1,0 +1,11 @@
+*~
+bin/
+build/
+lib/
+local/
+tmp/
+include/
+public/
+FridgeAPI/config.ini
+.tramp_history
+*.pyc
