@@ -64,8 +64,9 @@ def getData():
     numSamples = row["count"]
     modulus = int(numSamples / maxPoints)
      
+    conn = mdb.connect(mysql_host, mysql_user, mysql_passwd, mysql_db)
+  
     try:
-        conn = mdb.connect(mysql_host, mysql_user, mysql_passwd, mysql_db)
         cur = conn.cursor(mdb.cursors.DictCursor)
         cur.execute("SELECT * FROM fridge WHERE time > %s AND ID mod %s=0 ORDER BY time DESC", (limitDate,str(modulus)))
         recordset = cur.fetchall()        
@@ -73,8 +74,7 @@ def getData():
     except mdb.Error, e:
         return ""
     finally:
-        if conn:
-            conn.close()
+        conn.close()
             
     datasetArray = [{"name": "Temperature", "data": []}, {"name": "Battery Voltage", "data": []}]
     epoch = datetime.utcfromtimestamp(0)
@@ -94,10 +94,11 @@ def getData():
 def getLast24HourData():
 
     mysql_host, mysql_user, mysql_passwd, mysql_db = get_mysql_params()
+    
+    conn = mdb.connect(mysql_host, mysql_user, mysql_passwd, mysql_db)
 
     try:
         limitDate = datetime.now() - timedelta(days=1)
-        conn = mdb.connect(mysql_host, mysql_user, mysql_passwd, mysql_db)
         cur = conn.cursor(mdb.cursors.DictCursor)
         cur.execute("SELECT * FROM fridge WHERE time > %s AND ID mod 10=0 ORDER BY time DESC", (limitDate,))
         recordset = cur.fetchall()        
@@ -105,8 +106,7 @@ def getLast24HourData():
     except mdb.Error, e:
         return ""
     finally:
-        if conn:
-            conn.close()
+        conn.close()
 
     datasetArray = [{"name": "Temperature", "data": []}, {"name": "Battery Voltage", "data": []}]
     epoch = datetime.utcfromtimestamp(0)

@@ -113,7 +113,7 @@
             stroke: true,
             renderer: 'line',
             xScale: d3.time.scale(),
-            dataURL: 'http://homesensors.alexwarrior.cc/last24hours',
+            dataURL: 'last24hours',
             series: [ {
                 name: "Temperature",
                 color: 'rgba(192,132,255,0.8)'               
@@ -147,7 +147,7 @@
     } );
 
     var limitDate = new Date(2015, 4, 1, 0, 0, 0, 0);
-    limitDateURLStr = "http://homesensors.alexwarrior.cc/getData?maxPoints=5000&since="
+    limitDateURLStr = "getData?maxPoints=5000&since="
     limitDateURLStr = limitDateURLStr.concat(limitDate.toISOString())
     
     var voltageGraph = new Rickshaw.Graph.Ajax( {
