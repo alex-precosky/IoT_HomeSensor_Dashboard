@@ -8,7 +8,15 @@
             h2 {
                 color: rgb(0, 232, 15);
             }
+
+            p {
+                clear: both;
+            }
         
+            #charts {
+                text-align: center;
+            }
+
             .chart_title {
                 position: relative;
                 left: 20px;
@@ -23,7 +31,9 @@
             }
             
            .chart_container {
-                    margin:        auto;
+                    margin-left:        auto;
+                    margin-right: auto;
+                    display: inline-block;
                     position:        relative;
                     width: 650px;
                     padding:        20px;
@@ -65,7 +75,7 @@
 
     <link type="text/css" rel="stylesheet" href="js/rickshaw/rickshaw.css">
 
- 
+    <div id=charts>
         <div class="chart_container" id="temperatureChart_container">
             <div class="legend" id="temperature_legend"></div>
             <div class="chart_title" id="temperature_chart_title">
@@ -84,6 +94,7 @@
             <div class="y_axis" id="voltage_y_axis"></div>
             <div class="chart" id="voltageChart"></div> 
         </div> 
+    </div>
 
     <p>
         In the fridge is a resistive temperature device, along with some stuff to transmit
