@@ -79,7 +79,7 @@
         <div class="chart_container" id="temperatureChart_container">
             <div class="legend" id="temperature_legend"></div>
             <div class="chart_title" id="temperature_chart_title">
-                   <h3>Fridge Temperature</h3>
+                   <h3>Fridge Temperature, Last 24 Hours</h3>
             </div>
             <div class="y_axis" id="y_axis"></div>
             <div class="chart" id="temperatureChart"></div> 
@@ -166,7 +166,8 @@
             width: 580,
             height: 250,
             stroke: true,
-            renderer: 'line',
+            renderer: 'scatterplot',
+    dotSize: 2,
 			min: 2.5,
             xScale: d3.time.scale(),
             dataURL: limitDateURLStr,
