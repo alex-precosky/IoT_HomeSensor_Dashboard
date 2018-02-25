@@ -83,13 +83,16 @@ def getData():
         time = (row['time'] - epoch).total_seconds()
         temperature = row['temperature']
         batteryVoltage = row['batteryVoltage']
-        datasetArray[0]["data"].insert(0, {"x": time, "y": temperature} )
-        datasetArray[1]["data"].insert(0, {"x": time, "y": batteryVoltage} )
+        datasetArray[0]["data"].insert(0, [time*1000, temperature] )
+        datasetArray[1]["data"].insert(0, [time*1000, batteryVoltage] )
         
     return json.dumps(datasetArray)
 
     
     
+
+
+
 @app.route("/last24hours")
 def getLast24HourData():
 
@@ -115,10 +118,11 @@ def getLast24HourData():
         time = (row['time'] - epoch).total_seconds()
         temperature = row['temperature']
         batteryVoltage = row['batteryVoltage']
-        datasetArray[0]["data"].insert(0, {"x": time, "y": temperature} )
-        datasetArray[1]["data"].insert(0, {"x": time, "y": batteryVoltage} )
+        datasetArray[0]["data"].insert(0, [time*1000.0, temperature] )
+        datasetArray[1]["data"].insert(0, [time*1000.0, batteryVoltage] )
         
     return json.dumps(datasetArray)
+
     
 if __name__ == "__main__":
     app.run(debug=True)
