@@ -146,6 +146,12 @@ function make_battery_highchart() {
                 text: 'Voltage [V]'
             }
         },
+
+    plotOptions: {
+      series: {
+        turboThreshold: 0
+      }
+    },
     series: fridge_battery_chart_series,
 
     });
