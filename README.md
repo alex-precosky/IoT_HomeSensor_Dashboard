@@ -1,3 +1,4 @@
+
 # About
 
 Provides an HTTP API for querying historic sensor data, and provides a web site showing plots of sensor data.
@@ -28,6 +29,8 @@ The database should be set up in a MySQL instance, by restoring the provided sch
 ```
 mysql -u [uname] -p[pass] -h[host] [db_to_restore] < schema.sql
 ```
+
+Fake data for the past 24 hours can be inserted using the test script populate_test_db.py
 
 
 The connection info must be set in a file ```config.ini``` to be placed in directory FridgeAPI, formatted like:
