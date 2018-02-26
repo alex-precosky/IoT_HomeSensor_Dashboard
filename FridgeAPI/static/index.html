@@ -1,176 +1,266 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Alex Fridge Sensor</title>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Alex's Apartment IoT Dashboard</title>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
     <script src="js/highcharts_theme.js"></script>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Unica+One">
 
-        <style>
-	  body {
-	      background-color: #3e3e40;
-          }
+    <style>
+        body {
+            background-color: #3e3e40;
+        }
 
-            h1, h2 {
-            	  font-family: 'Unica One', sans-serif;
-                color: #e0e0e3;
-            }
+        h1,
+        h2 {
+            font-family: 'Arial Black', sans-serif;
+            color: #e0e0e3;
 
-            p, li {
-                clear: both;
-	        color: #e0e0e3;
-	  
-            }
-        
-            #charts {
-                text-align: center;
-            }
+        }
 
-  
-           .chart_container {
-                    margin-left:        auto;
-                    margin-right: auto;
-                    display: inline-block;
-                    position:        relative;
-                    width: 650px;
-                    padding:        20px;
-                    background:        #fff;
-                    box-shadow:        0px 0px 10px #999;
-                    border:        1px solid #999;
-                    margin-top:        20px;
-                    border-radius:     10px;
-            }
-            
-        </style>
-        
-    </head>
-    <body>
+        p,
+        li {
+            clear: both;
+            color: #e0e0e3;
 
-      <h1>IoT Dashboard - Homesensors.alexwarrior.cc</h1>
+        }
+
+        #charts {
+            text-align: center;
+        }
+
+
+        .chart_container {
+            margin-left: auto;
+            margin-right: auto;
+            display: inline-block;
+            position: relative;
+            width: 650px;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0px 0px 10px #999;
+            border: 1px solid #999;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Alex's Apartment IoT Dashboard</h1>
 
     <div id=charts>
-
-      <div class="chart_container" id="temperature_highchart_container"></div>
-      <div class="chart_container" id="battery_highchart_container"></div>    
-    
+        <div class="chart_container" id="temperature_highchart_container"></div>
+        <div class="chart_container" id="battery_highchart_container"></div>
     </div>
 
-
+    
+    <div id="temperature_gauge_container" width=650px></div>
 
     <p>
-        In the fridge is a resistive temperature device, along with some stuff to transmit
-        the values from it wirelessly every 10 seconds. A raspberry pi receives that and publishes
-        to an MQTT server. Another process subscribes to that data feed and writes a row in
-        a MySQL database somewhere.  A Flask based Python application serves up a JSON representation
+        In the fridge is a resistive temperature device, along with some stuff to transmit the values from it wirelessly every 10
+        seconds. A raspberry pi receives that and publishes to an MQTT server. Another process subscribes to that data feed
+        and writes a row in a MySQL database somewhere. A Flask based Python application serves up a JSON representation
         of the sensor readings and some Javascript makes a pretty chart.
     </p>
-    
+
     <h2>Some components include</h2>
-    
+
     <ul>
-      <li>A pair of 63 mW XBee Pro Series 1 802.15.4 radios</li>
-      <li>Resistive temperature device (RTD)</li>
-      <li>RTD to digital converter</li>
-      <li>2000 mAh 3.7V Lithium-Polymer battery</li>
+        <li>A pair of 63 mW XBee Pro Series 1 802.15.4 radios</li>
+        <li>Resistive temperature device (RTD)</li>
+        <li>RTD to digital converter</li>
+        <li>2000 mAh 3.7V Lithium-Polymer battery</li>
     </ul>
 
-    
-    
+
     <script>
 
-  
 
-    var limitDate = new Date(2015, 4, 1, 0, 0, 0, 0);
-    limitDateURLStr = "getData?maxPoints=5000&since="
-    limitDateURLStr = limitDateURLStr.concat(limitDate.toISOString())
-    
+        var limitDate = new Date(2015, 4, 1, 0, 0, 0, 0);
+        limitDateURLStr = "getData?maxPoints=5000&since="
+        limitDateURLStr = limitDateURLStr.concat(limitDate.toISOString())
 
 
+        fridge_main_chart_series = [];
 
-fridge_main_chart_series = [];
+        function make_main_highchart() {
+            var myChart = Highcharts.chart('temperature_highchart_container', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Fridge, Sensor Temperature and Battery Voltage'
+                },
+                subtitle: {
+                    text: 'Last 24 Hours'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    title: {
+                        text: 'Time [UTC]'
+                    },
+                },
+                yAxis: {
+                    title: {
+                        text: 'Temperature [C]'
+                    }
+                },
+                series: fridge_main_chart_series,
 
-function make_main_highchart() { 
-    var myChart = Highcharts.chart('temperature_highchart_container', {
+            });
+        };
+
+        fridge_battery_chart_series = [];
+
+        function make_battery_highchart() {
+            var myChart = Highcharts.chart('battery_highchart_container', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Long Term Sensor Battery Voltage'
+                },
+                subtitle: {
+                    text: 'Since Project Start'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    title: {
+                        text: 'Time'
+                    },
+                },
+                yAxis: {
+                    title: {
+                        text: 'Voltage [V]'
+                    }
+                },
+
+                plotOptions: {
+                    series: {
+                        turboThreshold: 0
+                    }
+                },
+                series: fridge_battery_chart_series,
+
+            });
+        };
+
+
+        var gaugeOptions = {
+
         chart: {
-            type: 'line'
+            type: 'solidgauge'
         },
-        title: {
-            text: 'Fridge, Sensor Temperature and Battery Voltage'
-        },
-        subtitle: {
-            text: 'Last 24 Hours'
-        },
-        xAxis: {
-          type: 'datetime',
-          title: {
-             text: 'Time [UTC]'
-          },
-        },
-        yAxis: {
-            title: {
-                text: 'Temperature [C]'
+
+        title: null,
+
+        pane: {
+            center: ['50%', '85%'],
+            size: '140%',
+            startAngle: -90,
+            endAngle: 90,
+            background: {
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                innerRadius: '60%',
+                outerRadius: '100%',
+                shape: 'arc'
             }
         },
-    series: fridge_main_chart_series,
 
-    });
-};
+        tooltip: {
+            enabled: false
+        },
 
-fridge_battery_chart_series = [];
-
-function make_battery_highchart() { 
-    var myChart = Highcharts.chart('battery_highchart_container', {
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: 'Long Term Sensor Battery Voltage'
-        },
-        subtitle: {
-            text: 'Since Project Start'
-        },
-        xAxis: {
-          type: 'datetime',
-          title: {
-             text: 'Time'
-          },
-        },
+        // the value axis
         yAxis: {
+            stops: [
+                [0.1, '#55BF3B'], // green
+                [0.5, '#DDDF0D'], // yellow
+                [0.9, '#DF5353'] // red
+            ],
+            lineWidth: 0,
+            minorTickInterval: null,
+            tickAmount: 20,
             title: {
-                text: 'Voltage [V]'
+                y: -145
+            },
+            labels: {
+                y: 16
             }
         },
 
-    plotOptions: {
-      series: {
-        turboThreshold: 0
-      }
-    },
-    series: fridge_battery_chart_series,
+        plotOptions: {
+            solidgauge: {
+                dataLabels: {
+                    y: 5,
+                    borderWidth: 0,
+                    useHTML: true
+                }
+            }
+        }
+        };
 
-    });
-};
 
+        var last_temperature = 0.0;
+        function make_temperature_gauge() {
+            var temperature_gauge = Highcharts.chart('temperature_gauge_container', Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: -2,
+                    max: 6,
+                    title: {
+                        text: 'Last Temperature',
+                        style: {fontSize: '18px', fontFamily: "Arial Black"}
+                    }
+                },
 
+                series: [{
+                    name: 'Last Temperature',
+                    data: [last_temperature],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y:.1f}</span><br/>' +
+                            '<span style="font-family:arial black;font-size:16px;color:silver">deg C</span></div>'
+                    },
+                    tooltip: {
+                        valueSuffix: ' C'
+                    }
+                }]
 
-$.getJSON("last24hours", function(json) {
-    fridge_main_chart_series = json;
-    make_main_highchart();
-});
+            }));
+        };
 
-$.getJSON(limitDateURLStr, function(json) {
-    fridge_battery_chart_series = [json[1]];
-    make_battery_highchart();
-});
+        $.getJSON("getData?maxPoints=1", function (json) {
+            last_temperature = json[0].data[0];
+            
+            
+            make_temperature_gauge();
+        });
+
+        $.getJSON("last24hours", function (json) {
+            fridge_main_chart_series = json;
+            make_main_highchart();
+        });
+
+        $.getJSON(limitDateURLStr, function (json) {
+            fridge_battery_chart_series = [json[1]];
+            make_battery_highchart();
+        });
 
     </script>
 
 
-    </body>
+</body>
+
 </html>

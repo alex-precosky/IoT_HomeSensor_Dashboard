@@ -216,5 +216,9 @@ Highcharts.theme = {
    maskColor: 'rgba(255,255,255,0.3)'
 };
 
+
+
+
+
 // Apply the theme
 Highcharts.setOptions(Highcharts.theme);
