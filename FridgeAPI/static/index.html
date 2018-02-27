@@ -241,7 +241,7 @@
             }));
         };
 
-        $.getJSON("getData?maxPoints=1", function (json) {
+        $.getJSON("getLatest", function (json) {
             last_temperature = json[0].data[0];
             
             

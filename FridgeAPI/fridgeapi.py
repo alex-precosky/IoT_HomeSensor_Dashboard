@@ -123,6 +123,39 @@ def getLast24HourData():
         
     return json.dumps(datasetArray)
 
+
+@app.route("/getLatest")
+def getLatest():
+
+    mysql_host, mysql_user, mysql_passwd, mysql_db = get_mysql_params()
+    
+    conn = mdb.connect(mysql_host, mysql_user, mysql_passwd, mysql_db)
+
+    try:
+        limitDate = datetime.now() - timedelta(days=1)
+        cur = conn.cursor(mdb.cursors.DictCursor)
+        cur.execute("SELECT * FROM fridge ORDER BY time DESC LIMIT 1")
+        recordset = cur.fetchall()        
+        
+    except mdb.Error, e:
+        return ""
+    finally:
+        conn.close()
+
+    datasetArray = [{"name": "Temperature", "data": []}, {"name": "Battery Voltage", "data": []}]
+    epoch = datetime.utcfromtimestamp(0)
+    
+    for row in recordset:
+        time = (row['time'] - epoch).total_seconds()
+        temperature = row['temperature']
+        batteryVoltage = row['batteryVoltage']
+        datasetArray[0]["data"].insert(0, [time*1000.0, temperature] )
+        datasetArray[1]["data"].insert(0, [time*1000.0, batteryVoltage] )
+        
+    return json.dumps(datasetArray)
+
+
+
     
 if __name__ == "__main__":
     app.run(debug=True)
