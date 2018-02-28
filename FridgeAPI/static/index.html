@@ -1,3 +1,4 @@
+
 <!DOCTYPE HTML>
 <html>
 
@@ -52,6 +53,12 @@
             margin-top: 20px;
             border-radius: 10px;
         }
+
+	#diagram {
+       padding: 30px;
+	   background: #fcfcfc;
+	}
+
     </style>
 
 </head>
@@ -68,22 +75,31 @@
     
     <div id="temperature_gauge_container" width=650px></div>
 
+    <h2>About the System</h2>
+
     <p>
-        In the fridge is a resistive temperature device, along with some stuff to transmit the values from it wirelessly every 10
-        seconds. A raspberry pi receives that and publishes to an MQTT server. Another process subscribes to that data feed
+        Quite a bit has to come together to make this work!
+        In the fridge is a temperature transducer, along with some stuff to transmit the values from it wirelessly every 10
+        seconds. A Raspberry Pi receives that and publishes to an MQTT server. Another process subscribes to that data feed
         and writes a row in a MySQL database somewhere. A Flask based Python application serves up a JSON representation
         of the sensor readings and some Javascript makes a pretty chart.
     </p>
 
-    <h2>Some components include</h2>
+    <h2>Components</h2>
 
     <ul>
-        <li>A pair of 63 mW XBee Pro Series 1 802.15.4 radios</li>
-        <li>Resistive temperature device (RTD)</li>
-        <li>RTD to digital converter</li>
+        <li>A pair of 63 mW XBee-PRO S2C Zigbee 802.15.4 radios</li>
+        <li>DS18B20 tepmerature sensor</li>
         <li>2000 mAh 3.7V Lithium-Polymer battery</li>
+        <li>Raspberry Pi Model 3</li>
+        <li>Eclipse Kura IoT Gateway Platform</li>
+        <li>Eclipse Mosquitto MQTT Broker</li>
+        <li>MySQL</li>
+        <li>Python/Flask</li>
     </ul>
 
+    <h2>System Diagram</h2>
+    <img id="diagram" src="diagram.png">
 
     <script>
 
