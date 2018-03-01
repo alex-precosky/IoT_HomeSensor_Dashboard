@@ -114,7 +114,8 @@
         function make_main_highchart() {
             var myChart = Highcharts.chart('temperature_highchart_container', {
                 chart: {
-                    type: 'line'
+                    type: 'line',
+                    zoomType: 'x',
                 },
                 title: {
                     text: 'Fridge, Sensor Temperature and Battery Voltage'
@@ -143,7 +144,8 @@
         function make_battery_highchart() {
             var myChart = Highcharts.chart('battery_highchart_container', {
                 chart: {
-                    type: 'line'
+                    type: 'line',
+                    zoomType: 'x',
                 },
                 title: {
                     text: 'Long Term Sensor Battery Voltage'
