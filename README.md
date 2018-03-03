@@ -3,6 +3,8 @@
 
 Provides an HTTP API for querying historic sensor data, and provides a web site showing plots of sensor data.
 
+It's hosted at http://homesensors.alexwarrior.cc where the project is described further.
+
 # Requirements
 
 * Python 2.7
