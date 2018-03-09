@@ -146,6 +146,11 @@
         limitDateURLStr = "getData?maxPoints=5000&since="
         limitDateURLStr = limitDateURLStr.concat(limitDate.toISOString())
 
+        Highcharts.setOptions({
+        time: {
+                useUTC: false
+            }
+        });
 
         fridge_main_chart_series = [];
 
@@ -164,7 +169,7 @@
                 xAxis: {
                     type: 'datetime',
                     title: {
-                        text: 'Time [UTC]'
+                        text: 'Time'
                     },
                 },
                 yAxis: {

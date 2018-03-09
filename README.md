@@ -27,6 +27,13 @@ activate HomeSensors
 pip install -r requirements.txt
 ```
 
+On windows with anaconda you might also need to do 
+```
+conda install mysql-python
+```
+
+Since the pip mysql-client might not install.
+
 The database should be set up in a MySQL instance, by restoring the provided schema. The database can be named whatever you want: 
 ```
 mysql -u [uname] -p[pass] -h[host] [db_to_restore] < schema.sql
