@@ -79,3 +79,7 @@ For rickshaw plotting.  No parameters.  Returns a bunch of points using the /get
 # TODO
 
 Remove unneeded requirements from the pip requirements.txt list 
+
+# License
+
+This is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
