@@ -1,3 +1,6 @@
+# Note
+
+This all needs updating as this project migrates to 'hatch'
 
 # About
 
