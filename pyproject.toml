@@ -38,6 +38,7 @@ path = "src/iot_homesensor_dashboard/__about__.py"
 dependencies = [
   "configparser",
   "coverage[toml]>=6.5",
+  "flup",
   "gunicorn",
   "pytest",
   "python-dateutil",
