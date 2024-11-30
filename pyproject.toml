@@ -38,6 +38,7 @@ path = "src/iot_homesensor_dashboard/__about__.py"
 dependencies = [
   "configparser",
   "coverage[toml]>=6.5",
+  "gunicorn",
   "pytest",
   "python-dateutil",
   "flask",
@@ -55,6 +56,7 @@ cov = [
   "cov-report",
 ]
 app = "python src/iot_homesensor_dashboard/fridgeapi.py"
+serve = "gunicorn iot_homesensor_dashboard.fridgeapi:app"
 
 [[tool.hatch.envs.all.matrix]]
 python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
