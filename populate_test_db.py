@@ -1,6 +1,8 @@
-import MySQLdb as mdb
+import pymysql as mdb
 from datetime import datetime,timedelta
 import math
+
+mdb.install_as_MySQLdb()
 
 mysql_host = "localhost"
 mysql_user = "precosky_fridge"
@@ -18,7 +20,7 @@ def perdelta(start, end, delta):
 
 if __name__ == "__main__":
 
-    conn = mdb.connect(mysql_host, mysql_user, mysql_passwd, mysql_db)
+    conn = mdb.connect(host=mysql_host, user=mysql_user, password=mysql_passwd, db=mysql_db)
     cursor = conn.cursor()
  
     start_time = datetime.now() - timedelta(days=1)

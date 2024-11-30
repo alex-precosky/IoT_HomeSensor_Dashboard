@@ -10,7 +10,7 @@ It's hosted at http://homesensors.alexwarrior.cc where the project is described 
 
 # Requirements
 
-* Python 2.7
+* [Python Hatch](https://hatch.pypa.io/latest/)
 * MySQL
 * The mysql-client package, which might not install in Windows with pip as below, so might be installed separately perhaps through Anaconda
 
@@ -37,7 +37,7 @@ conda install mysql-python
 
 Since the pip mysql-client might not install.
 
-The database should be set up in a MySQL instance, by restoring the provided schema. The database can be named whatever you want: 
+The database should be set up in a MySQL instance, by restoring the provided schema. The database can be named whatever you want:
 ```
 mysql -u [uname] -p[pass] -h[host] [db_to_restore] < schema.sql
 ```

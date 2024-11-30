@@ -36,8 +36,12 @@ path = "src/iot_homesensor_dashboard/__about__.py"
 
 [tool.hatch.envs.default]
 dependencies = [
+  "configparser",
   "coverage[toml]>=6.5",
   "pytest",
+  "python-dateutil",
+  "flask",
+  "PyMySQL",
 ]
 [tool.hatch.envs.default.scripts]
 test = "pytest {args:tests}"
