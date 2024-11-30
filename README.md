@@ -1,7 +1,3 @@
-# Note
-
-This all needs updating as this project migrates to 'hatch'
-
 # About
 
 Provides an HTTP API for querying historic sensor data, and provides a web site showing plots of sensor data.
@@ -11,31 +7,24 @@ It's hosted at http://homesensors.alexwarrior.cc where the project is described 
 # Requirements
 
 * [Python Hatch](https://hatch.pypa.io/latest/)
-* MySQL
-* The mysql-client package, which might not install in Windows with pip as below, so might be installed separately perhaps through Anaconda
+* A MySQL serer
 
 # Setup
 
-There's a submodule that's needed, so after cloning this repository, get the submodule with...
+There's a submodule that's needed - the
+[rickshaw](https://tech.shutterstock.com/rickshaw/) JavaScript time series
+plotting toolkint, so after cloning this repository, get the submodule with...
+
 ```
 git submodule init
 git submodule update
 ```
 
-Recreate the pip virtual environment, probably in a virtual environment of some sort.  I use Anaconda sometimes, so I might do...
+Recreate the python virtual environment.
 
 ```
-conda create -n HomeSensors python=2.7 anaconda
-activate HomeSensors
-pip install -r requirements.txt
+hatch shell
 ```
-
-On windows with anaconda you might also need to do 
-```
-conda install mysql-python
-```
-
-Since the pip mysql-client might not install.
 
 The database should be set up in a MySQL instance, by restoring the provided schema. The database can be named whatever you want:
 ```
@@ -54,19 +43,32 @@ password = myPassWord
 db = my_db_name
 ```
 
-# Running
+# Serving
+
+## Locally
 
 To test locally, using Windows...:
 ```
-cd FridgeAPI
-python fridgeapi.py
+hatch run serve
 ```
 
-The site is then available at http://localhost:5000
+The site is then available at http://localhost:8000
 
-Serving from using Passenger:
+## Serving using Passenger
 
-passenger_wsgi.py was used by Apache to host the site, but it hasn't been tried with other servers
+File `passenger_wsgi.py` was used by Apache to host the site, but it hasn't been
+tried with other servers.
+
+DreamHost removed Passenger support in 2024 from its shared hosting plan so this
+isn't used anymore.
+
+## Serving using FastCGI
+
+File `homesensors.fcgi` can be modified to let Apache serve this using
+FastCGI. Modify the path to the Python interpreter in the first line to point to
+the Python interpreter set up if `hatch shell` is run. That interpreter will be
+able to find the dependencies this application needs.
+
 
 # HTTP API
 * /getData
